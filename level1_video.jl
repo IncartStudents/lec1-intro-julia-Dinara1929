@@ -203,7 +203,19 @@ A = rand(3, 3)
 
 v = rand(3)
 #f(v) - программа не завершит работу
-
+#-----------------------
+#Basic linear algebra
+A = rand(1:4,3,3)
+B = A
+C = copy(A)
+[ B C]
+A[1]=17
+[B C]
+x=ones(3)
+b=A*x 
+Asym = A + A'
+Apd = A'A
+A\b 
 v = [3, 5, 2]
 sort!(v)
 @show v
