@@ -1,7 +1,7 @@
 # переписать ниже примеры из первого часа из видеолекции: 
 # https://youtu.be/4igzy3bGVkQ
 # по желанию можно поменять значения и попробовать другие функции
-
+#=
 #Getting Started
 println("I'm excited to learn Julia")
 
@@ -221,3 +221,9 @@ sort!(v)
 @show v
 #-----------------
 #Packages
+=#
+methods(+)
+@which (3.0+3.0)
+using Plots
+x = 1:10; y = rand(10); # These are the plotting data
+plot(x,y, label="my label")
