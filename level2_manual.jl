@@ -11,44 +11,75 @@
 # Что происходит с глобальной константой PI, о чем предупреждает интерпретатор?
 const PI = 3.14159
 PI = 3.14
+#WARNING: redefinition of constant Main.PI. This may fail, cause incorrect answers, or produce other errors.    
+
 
 # Что происходит с типами глобальных переменных ниже, какого типа `c` и почему?
 a = 1
 b = 2.0
 c = a + b
+#переменным присвоенны типы данных и значения
 
 # Что теперь произошло с переменной а? Как происходит биндинг имен в Julia?
 a = "foo"
+#тип и значение а изменли
 
 # Что происходит с глобальной переменной g и почему? Чем ограничен биндинг имен в Julia?
 g::Int = 1
 g = "hi"
+#MethodError: Cannot `convert` an object of type String to an object of type Int64
 
 function greet()
     g = "hello"
     println(g)
 end
 greet()
+#hello
 
 # Чем отличаются присвоение значений новому имени - и мутация значений?
 v = [1,2,3]
 z = v
-v[1] = 3
-v = "hello"
-z
+v[1] = 3 #тип данных не изменен
+v = "hello" #изменился тип и значения
+z #вывел последнюю версию v перед изменением данных
 
 # Написать тип, параметризованный другим типом
-
+struct NN
+    bar
+    Name::String
+    Number::Int
+end
+typeof(NN)#typeof(one) = Vector{Any}
 #=
 Написать функцию для двух аругментов, не указывая их тип,
 и вторую функцию от двух аргментов с конкретными типами,
 дать пример запуска
 =#
-
+function f(x, y)
+    x + y
+end
+function ff(x::Int, y::Int)
+    x + y
+end
 #=
-Абстрактный тип - ключевое слово?
-Примитивный тип - ключевое слово?
-Композитный тип - ключевое слово?
+julia> @show f(3,3)
+f(3, 3) = 6
+6
+
+julia> typeof(f(3,3))
+Int64
+
+julia> @show ff(3,3)
+ff(3, 3) = 6
+6
+
+julia> typeof(ff(3,3))
+Int64
+=#
+#=
+Абстрактный тип - ключевое слово? abstract type «name» end
+Примитивный тип - ключевое слово? primitive type
+Композитный тип - ключевое слово? struct
 =#
 
 #=
@@ -57,8 +88,29 @@ z
 Выполнить функции над объектами подтипов 1 и 2 и объяснить результат
 (функция выводит произвольный текст в консоль)
 =#
+abstract type Pet end
+struct Dog <: Pet; name::String end
+struct Cat <: Pet; name::String end
 
+function encounter(a::Pet, b::Pet)
+    verb = meets(a, b)
+    println("$(a.name) встречает $(b.name) и $verb.")
+end
 
+meets(a::Dog, b::Dog) = "нюхает"
+meets(a::Dog, b::Cat) = "гонится"
+meets(a::Cat, b::Dog) = "шипит"
+meets(a::Cat, b::Cat) = "мурлычит"
+
+fido = Dog("Рекс")
+rex = Dog("Мухтар")
+whiskers = Cat("Матроскин")
+spots = Cat("Бегемот")
+
+encounter(fido, rex)       
+encounter(fido, whiskers)  
+encounter(whiskers, rex)   
+encounter(whiskers, spots) 
 #===========================================================================================
 2. Функции:
 лямбды и обычные функции,

@@ -1,7 +1,7 @@
 # переписать ниже примеры из первого часа из видеолекции: 
 # https://youtu.be/4igzy3bGVkQ
 # по желанию можно поменять значения и попробовать другие функции
-#=
+
 #Getting Started
 println("I'm excited to learn Julia")
 
@@ -221,9 +221,69 @@ sort!(v)
 @show v
 #-----------------
 #Packages
-=#
-methods(+)
-@which (3.0+3.0)
+using Pkg
+Pkg.add("Colors")
+using Colors
+palette = distinguishable_colors(100) #выводит ленту цветов
+rand(palette, 3, 3) #выводит палитру 3*3
+#------------------
+#Plotting
 using Plots
-x = 1:10; y = rand(10); # These are the plotting data
-plot(x,y, label="my label")
+x = -3:0.1:3
+f(x)=x^2
+y=f.(x)
+gr()
+plot(x,y, label="line")
+scatter!(x,y, label="points")
+#рисует параболу в большем маштабе
+globaltemps = [14.4,14.5,14.8]
+nump = [45000,20000,15000]
+plot(nump,globaltemps, legend=false)
+scatter!(nump,globaltemps, legend=false)
+#рисует график температур
+xflip!()
+#рисует отзераленную версию последнего графика
+xlabel!("approximate")
+ylabel!("(C)")
+title!("global warming")
+#подписи
+p1=plot(x,x)
+p2=plot(x,x.^2)
+p3=plot(x,x.^3)
+p4=plot(x,x.^4)
+plot(p1,p2,p3,p4,layout=(2,2),legend=false)
+#рисует 4 графика
+#----------------
+#Multiple Dispatch
+methods(+)
+@which 3+3
+#+(x::T, y::T) where T<:Union{Int128, Int16, Int32, Int64, Int8, UInt128, UInt16, UInt32, UInt64, UInt8}
+#@ Base int.jl:87
+@which 3+3.0
+#+(x::Number, y::Number)
+#@ Base promotion.jl:429
+@which 3.0+3.0
+#+(x::T, y::T) where T<:Union{Float16, Float32, Float64}
+#@ Base float.jl:491
+import Base: +
+"hello" + "world!"
+@which "hello" + "world!"
+#MethodError: no method matching invoke +(::String, ::String)
++(x::String,y::String)=string(x,y)
+"hello "+"world!"
+@which "hello" + "world!"
+#"hello world!" +(x::String, y::String)
+foo(x,y)=println("duck-type foo!")
+foo(x::Int,y::Float64)=println("foo with an int and a flo")
+foo(x::Float64,y::Float64)=println("foo with two flo")
+foo(x::Int,y::Int)=println("foo with two int")
+foo(1,1)
+foo(1.,1.)
+foo(1,1.)
+foo(true,false)
+#=
+foo with two int
+foo with two flo
+foo with an int and a flo
+duck-type foo!
+=#
