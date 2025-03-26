@@ -9,7 +9,6 @@ mutable struct WorldState
         # TODO: добавить случайные позиции для n_boids птичек вместо одной
         
         new((width/2, height/2), width, height)
-        plot(boid)
     end
 end
 

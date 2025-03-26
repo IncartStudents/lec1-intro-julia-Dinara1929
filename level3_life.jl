@@ -6,7 +6,12 @@ mutable struct Life
     current_frame::Matrix{Int}
     next_frame::Matrix{Int}
 end
- 
+
+function neighbors(curr,i,j)
+    return curr[i-1,j]+curr[i+1,j]+curr[i,j-1]+curr[i,j+1]+curr[i-1,j-1]+curr[i-1,j+1]+curr[i+1,j-1]+curr[i+1,j+1]
+end
+
+
 function step!(z::Life)
  #function step!(state::Life)    UndefVarError: `state` not defined in `Main.GameOfLife`
     #curr = state.current_frame
@@ -19,44 +24,39 @@ function step!(z::Life)
     TODO: вместо случайного шума
     реализовать один шаг алгоритма "Игра жизнь"
     =#
-
-    function neighbors(curr,i,j)
-    begin
-        return curr[i-1][j]+curr[i+1][j]+curr[i][j-1]+curr[i][j+1]+curr[i-1][j-1]+curr[i-1][j+1]+curr[i+1][j-1]+curr[i+1][j+1]
-    end
-
-    if curr[1][1]==1
-        if curr[2][2]+curr[2][1]+curr[1][2]<2
-            next[1][1]=0
+    n=curr[2,2]+curr[2,1]+curr[1,2]
+    if curr[1,1]==1
+        if n<2
+            next[1,1]=0
         else
-            if curr[2][2]+curr[2][1]+curr[1][2]>3
-                next[1][1]=0
+            if n>3
+                next[1,1]=0
             else
-                next[1][1]=1
+                next[1,1]=1
             end
         end 
     else
-        if curr[2][2]+curr[1][2]+curr[2][1]==3
-            next[1][1]=1
+        if n==3
+            next[1,1]=1
         end
     end   
-    
-    if curr[1][b]==1
-        if curr[2][b-1]+curr[1][b-1]+curr[2][b]<2
-            next[1][b]=0
+    n=curr[2,b-1]+curr[1,b-1]+curr[2,b]
+    if curr[1,b]==1
+        if n<2
+            next[1,b]=0
         else
-            if curr[2][b-1]+curr[1][b-1]+curr[2][b]>3
-                next[1][b]=0
+            if n>3
+                next[1,b]=0
             else
-                next[1][b]=1
+                next[1,b]=1
             end
         end 
     else
-        if curr[2][b-1]+curr[1][b-1]+curr[2][b]==3
-            next[1][b]=1
+        if n==3
+            next[1,b]=1
         end
     end
-
+#=
     if curr[a][1]==1
         if curr[a-1][2]+curr[a][2]+curr[a-1][1]<2
             next[a][1]=0
@@ -88,95 +88,95 @@ function step!(z::Life)
             next[a][b]=1
         end
     end 
-
+=#
     for i in 2:(a-1)
-        if curr[i][1]==1
-            if curr[i-1][1]+curr[i+1][1]+curr[i][2]+curr[i-1][2]+curr[i+1][2]<2
-                next[i][1]=0
+        if curr[i,1]==1
+            if (curr[i-1,1]+curr[i+1,1]+curr[i,2]+curr[i-1,2]+curr[i+1,2])<2
+                next[i,1]=0
             else
-                if curr[i-1][1]+curr[i+1][1]+curr[i][2]+curr[i-1][2]+curr[i+1][2]>3
-                    next[i][1]=0
+                if (curr[i-1,1]+curr[i+1,1]+curr[i,2]+curr[i-1,2]+curr[i+1,2])>3
+                    next[i,1]=0
                 else
-                    next[i][1]=1
+                    next[i,1]=1
                 end
             end
         else
-            if curr[i-1][1]+curr[i+1][1]+curr[i][2]+curr[i-1][2]+curr[i+1][2]==3
-                next[i][1]=1
+            if (curr[i-1,1]+curr[i+1,1]+curr[i,2]+curr[i-1,2]+curr[i+1,2])==3
+                next[i,1]=1
             end
         end
     end
 
     for i in 2:(a-1)
-        if curr[i][b]==1
-            if curr[i-1][b]+curr[i+1][b]+curr[i][b-1]+curr[i-1][b-1]+curr[i+1][b-1]<2
-                next[i][1]=0
+        if curr[i,b]==1
+            if (curr[i-1,b]+curr[i+1,b]+curr[i,b-1]+curr[i-1,b-1]+curr[i+1,b-1])<2
+                next[i,1]=0
             else
-                if curr[i-1][b]+curr[i+1][b]+curr[i][b-1]+curr[i-1][b-1]+curr[i+1][b-1]>3
-                    next[i][1]=0
+                if (curr[i-1,b]+curr[i+1,b]+curr[i,b-1]+curr[i-1,b-1]+curr[i+1,b-1])>3
+                    next[i,1]=0
                 else
-                    next[i][1]=1
+                    next[i,1]=1
                 end
             end
         else
-            if curr[i-1][b]+curr[i+1][b]+curr[i][b-1]+curr[i-1][b-1]+curr[i+1][b-1]==3
-                next[i][1]=1
+            if (curr[i-1,b]+curr[i+1,b]+curr[i,b-1]+curr[i-1,b-1]+curr[i+1,b-1])==3
+                next[i,1]=1
             end
         end
     end
 
     for i in 2:(a-1)
         for j in 2:(b-1)
-            if curr[i][j]==1
+            if curr[i,j]==1
                 if neighbors(curr,i,j)<2
-                    next[i][j]=0
+                    next[i,j]=0
                 else
                     if neighbors(curr,i,j)>3
-                        next[i][j]=0
+                        next[i,j]=0
                     else
-                        next[i][j]=1
+                        next[i,j]=1
                     end
                 end
             else
                 if neighbors(curr,i,j)==3
-                    next[i][j]=1
+                    next[i,j]=1
                 end
             end
         end
     end
 
     for j in 2:(b-1)
-        if curr[1][j]==1
-            if curr[2][j]+curr[1][j-1]+curr[1][j+1]+curr[2][j-1]+curr[2][j+1]<2
-                next[1][j]=0
+        if curr[1,j]==1
+            if (curr[2,j]+curr[1,j-1]+curr[1,j+1]+curr[2,j-1]+curr[2,j+1])<2
+                next[1,j]=0
             else
-                if curr[2][j]+curr[1][j-1]+curr[1][j+1]+curr[2][j-1]+curr[2][j+1]>3
-                    next[1][j]=0
+                if (curr[2,j]+curr[1,j-1]+curr[1,j+1]+curr[2,j-1]+curr[2,j+1])>3
+                    next[1,j]=0
                 else
-                    next[1][j]=1
+                    next[1,j]=1
                 end
             end
         else
-            if curr[2][j]+curr[1][j-1]+curr[1][j+1]+curr[2][j-1]+curr[2][j+1]==3
-                next[1][j]=1
+            if (curr[2,j]+curr[1,j-1]+curr[1,j+1]+curr[2,j-1]+curr[2,j+1])==3
+                next[1,j]=1
             end
         end
     end
 
     for j in 2:(b-1)
-        if curr[a][j]==1
-            if curr[a-1][j]+curr[a][j-1]+curr[a][j+1]+curr[a-1][j-1]+curr[a-1][j+1]<2
-                next[1][j]=0
+        if curr[a,j]==1
+            if (curr[a-1,j]+curr[a,j-1]+curr[a,j+1]+curr[a-1,j-1]+curr[a-1,j+1])<2
+                next[1,j]=0
             else
-                if curr[a-1][j]+curr[a][j-1]+curr[a][j+1]+curr[a-1][j-1]+curr[a-1][j+1]>3
-                    next[1][j]=0
+                if (curr[a-1,j]+curr[a,j-1]+curr[a,j+1]+curr[a-1,j-1]+curr[a-1,j+1])>3
+                    next[1,j]=0
                 else
-                    next[1][j]=1
+                    next[1,j]=1
                 end
             end
         else
-            if curr[2][j]+curr[1][j-1]+curr[1][j+1]+curr[2][j-1]+curr[2][j+1]==3
-                next[1][j]=1
+            if (curr[a-1,j]+curr[a,j-1]+curr[a,j+1]+curr[a-1,j-1]+curr[a-1,j+1])==3
+                next[1,j]=1
             end
         end
     end
@@ -193,39 +193,8 @@ function step!(z::Life)
     # julia> mod1(31, 30)
     # 1
 
-    if z.current_frame == z.next_frame
-        print("yes")
-    else
-        print("no")
-    end
-
-    println("1")
-    if z.next_frame == next
-        print("yes")
-    else
-        print("no")
-    end
-
-    z1 = z.current_frame 
-    z2 = z.next_frame
-    z.current_frame = z.next_frame
-    z.next_frame = next
-    #return z
-
-    println("1")
-    if z1==z.next_frame
-        print("yes")
-    else
-        print("no")
-    end
-    println("1")
-    if z.next_frame==next
-        print("yes")
-    else
-        print("no")
-    end
-
-end
+    z.current_frame.=z.next_frame
+    z.next_frame.=next
 end
 
 
@@ -237,30 +206,13 @@ function (@main)(ARGS)
 
     game = Life(init, zeros(n, m))
 
-    step!(game)
-    
-    
-    g=game
-    step!(game)
-    if g==game
-        print("yes")
-    else
-        print("no")
-    end
-    
-
-    #проверка работы функции step!
-    #не работает (выводится yes)
-    
-
-    #=
-    anim = Plots.@animate for time ∈ 1:100
+    anim = Plots.@animate for time = 1:500
         step!(game)
         cr = game.current_frame
         heatmap(cr)
     end
-    #gif(anim, "life.gif", fps = 10)
-    =#
+    gif(anim, "life.gif", fps = 10)
+    
 end
 
 
