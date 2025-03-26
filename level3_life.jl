@@ -56,39 +56,39 @@ function step!(z::Life)
             next[1,b]=1
         end
     end
-#=
-    if curr[a][1]==1
-        if curr[a-1][2]+curr[a][2]+curr[a-1][1]<2
-            next[a][1]=0
+
+    if curr[a,1]==1
+        if (curr[a-1,2]+curr[a,2]+curr[a-1,1])<2
+            next[a,1]=0
         else
-            if curr[a-1][2]+curr[a][2]+curr[a-1][1]>3
-                next[a][1]=0
+            if (curr[a-1,2]+curr[a,2]+curr[a-1,1])>3
+                next[a,1]=0
             else
-                next[a][1]=1
+                next[a,1]=1
             end
         end 
     else
-        if curr[a-1][2]+curr[a][2]+curr[a-1][1]==3
-            next[a][1]=1
+        if (curr[a-1,2]+curr[a,2]+curr[a-1,1])==3
+            next[a,1]=1
         end
     end
 
-    if curr[a][b]==1
-        if curr[a-1][b-1]+curr[a][b-1]+curr[a-1][b]<2
-            next[a][b]=0
+    if curr[a,b]==1
+        if (curr[a-1,b-1]+curr[a,b-1]+curr[a-1,b])<2
+            next[a,b]=0
         else
-            if curr[a-1][b-1]+curr[a][b-1]+curr[a-1][b]>3
-                next[a][b]=0
+            if (curr[a-1,b-1]+curr[a,b-1]+curr[a-1,b])>3
+                next[a,b]=0
             else
-                next[a][b]=1
+                next[a,b]=1
             end
         end 
     else
-        if curr[a-1][b-1]+curr[a][b-1]+curr[a-1][b]==3
-            next[a][b]=1
+        if (curr[a-1,b-1]+curr[a,b-1]+curr[a-1,b])==3
+            next[a,b]=1
         end
     end 
-=#
+
     for i in 2:(a-1)
         if curr[i,1]==1
             if (curr[i-1,1]+curr[i+1,1]+curr[i,2]+curr[i-1,2]+curr[i+1,2])<2
@@ -199,27 +199,23 @@ end
 
 
 function (@main)(ARGS)
-    #using Plots
     n = 30
     m = 30
     init = rand(0:1, n, m)
 
     game = Life(init, zeros(n, m))
 
-    anim = Plots.@animate for time = 1:500
+    anim = Plots.@animate for time = 1:100
         step!(game)
         cr = game.current_frame
         heatmap(cr)
     end
     gif(anim, "life.gif", fps = 10)
-    
 end
-
 
 export main
 
 end
-
 
 #-----
 
