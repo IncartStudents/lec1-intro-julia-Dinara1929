@@ -1,7 +1,6 @@
 module Boids
 using Plots
 
-
 mutable struct WorldState
     boid::Tuple{Float64, Float64}
     height::Float64
@@ -10,8 +9,11 @@ mutable struct WorldState
         # TODO: добавить случайные позиции для n_boids птичек вместо одной
         
         new((width/2, height/2), width, height)
+        plot(boid)
     end
 end
+
+
 
 function update!(state::WorldState)
     state.boid = state.boid .+ 0.1

@@ -1,6 +1,5 @@
 
 module GameOfLife
-begin
 using Plots
 
 mutable struct Life
@@ -8,13 +7,13 @@ mutable struct Life
     next_frame::Matrix{Int}
 end
  
-function step!(Life)
+function step!(z::Life)
  #function step!(state::Life)    UndefVarError: `state` not defined in `Main.GameOfLife`
     #curr = state.current_frame
     #next = state.next_frame 
-    (a,b)=size(Life.current_frame)
-    curr = Life.current_frame
-    next = Life.next_frame 
+    (a,b)=size(z.current_frame)
+    curr = z.current_frame
+    next = z.next_frame 
 
     #=
     TODO: вместо случайного шума
@@ -182,7 +181,6 @@ function step!(Life)
         end
     end
 
-
     #=
     for i in 1:length(curr)
         curr[i] = rand(0:1)
@@ -194,47 +192,86 @@ function step!(Life)
     # 10
     # julia> mod1(31, 30)
     # 1
-    Life.current_frame = next_frame
-    Life.next_frame = next
-    return nothing
+
+    if z.current_frame == z.next_frame
+        print("yes")
+    else
+        print("no")
+    end
+
+    println("1")
+    if z.next_frame == next
+        print("yes")
+    else
+        print("no")
+    end
+
+    z1 = z.current_frame 
+    z2 = z.next_frame
+    z.current_frame = z.next_frame
+    z.next_frame = next
+    #return z
+
+    println("1")
+    if z1==z.next_frame
+        print("yes")
+    else
+        print("no")
+    end
+    println("1")
+    if z.next_frame==next
+        print("yes")
+    else
+        print("no")
+    end
+
+end
 end
 
-#function (@main)(ARGS)  UndefVarError: `main` not defined in `Main.GameOfLife`
-function Game()
-    using Plots
+
+function (@main)(ARGS)
+    #using Plots
     n = 30
     m = 30
     init = rand(0:1, n, m)
 
     game = Life(init, zeros(n, m))
 
-    anim = Plots.@animate for time = 1:100
+    step!(game)
+    
+    
+    g=game
+    step!(game)
+    if g==game
+        print("yes")
+    else
+        print("no")
+    end
+    
+
+    #проверка работы функции step!
+    #не работает (выводится yes)
+    
+
+    #=
+    anim = Plots.@animate for time ∈ 1:100
         step!(game)
         cr = game.current_frame
         heatmap(cr)
     end
-    gif(anim, "life.gif", fps = 10)
+    #gif(anim, "life.gif", fps = 10)
+    =#
 end
 
-#export main
+
+export main
 
 end
-end
+
 
 #-----
 
 using .GameOfLife
 using Plots
-#GameOfLife.main("")   UndefVarError: `main` not defined in `Main.GameOfLife`
-Game()
-end
-
-#ERROR: LoadError: UndefVarError: `Plots` not defined in `Main.GameOfLife`
-
-#Run active Julia file
- #=
- Activating project at `c:\Users\Dinara\.julia\dev\lec1-intro-julia-Dinara1929`
-┌ Error: Some Julia code in the VS Code extension crashed
-└ @ VSCodeDebugger c:\Users\Dinara\.vscode\extensions\julialang.language-julia-1.127.2\scripts\error_handler.jl:15
-ERROR: ArgumentError: lowering returned an error, $(Expr(:error, "\"using\" expression not at top level"))
- =#
+GameOfLife.main("")
+#end
